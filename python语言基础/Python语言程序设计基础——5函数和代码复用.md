@@ -444,30 +444,398 @@ main()
 
 ## Python内置函数
 
-|      |      |      |      |      |
-| ---- | ---- | ---- | ---- | ---- |
-|      |      |      |      |      |
-|      |      |      |      |      |
-|      |      |      |      |      |
-|      |      |      |      |      |
-|      |      |      |      |      |
-|      |      |      |      |      |
-|      |      |      |      |      |
-|      |      |      |      |      |
-|      |      |      |      |      |
-|      |      |      |      |      |
-|      |      |      |      |      |
-
-
+| abs()     | id()       | round()       | compile()    | locals()          |
+| --------- | ---------- | ------------- | ------------ | ----------------- |
+| all()     | input()    | set()         | dir()        | map()             |
+| any()     | int()      | sorted()      | exec()       | memoryview()      |
+| asci()    | len()      | str()         | enumerate()  | next()            |
+| bin()     | list()     | tuple()       | filter()     | object()          |
+| bool()    | max()      | type()        | format()     | property()        |
+| chr()     | min()      | zip()         | frozenset()  | repr()            |
+| complex() | oct()      |               | gentattr()   | setattr()         |
+| dict()    | open()     |               | globals()    | slice()           |
+| divmod()  | ord()      | bytes()       | hashattr()   | staticmethod()    |
+| eval()    | pow()      | delattr()     | help()       | sum()             |
+| float()   | print()    | bytearray()   | isinstance() | super()           |
+| hash()    | range()    | callable()    | issubclass() | vars()            |
+| hex()     | reversed() | classmethod() | iter()       | _      import() _ |
 
 
 
 ## 程序练习题
 
+5.1 用函数简化代码，输出一个更大的田字格。
+
+```python
+def drawsq(n):
+    line=3*n+1
+    for i in range(1,line+1):
+        if i%3 ==1:
+            print(n*"+----",end="")
+            print("+")
+        else:
+            print ("|    "*n,end="")
+            print("|")
+            
+def main():
+    n=eval(input("请输入您要的阶数： "))
+    drawsq(n)
+    
+main()
+```
+
+5.2 实现isOdd()函数，参数为整数，如果整数为奇数，返回True,否则返回False
+
+```python
+def isOdd(num):
+    try:
+        if type(num) == type(0.):
+            raise TypeError
+        if num%2 == 0:
+            return False
+        else:
+            return True
+    except TypeError:
+        print('这不是一个有效的整数！ ')
+        
+print(isOdd(4))
+print(isOdd(3))
+print(isOdd(-1))
+print(isOdd('str'))
+print(isOdd(3.))
+```
+
+5.3 实现isNum()函数，参数为一个字符串，如果这个字符串属于整数、浮点数或复数的表示，则返回True,否则返回False.
+
+```python
+# python 中合法的数字有十进制整数，浮点数，十六进制整数，复数
+# --------------------------3 也是合法数字
+def isNum(num):
+    np = '+-'
+    numbers = '.0123456789'
+    numbersE = '.0123456789+-jJEe'
+    x16 = '0123456789abcdefABCDEF'
+    
+    if num[0] in np:
+        try:
+            return isNum(num[1:])
+        except:
+            return False
+    elif num[0] in numbers:
+        if num[:2] == '0x': # 16 进制分支
+            for i in num[2:]:
+                if i not in x16:
+                    return False
+            return True
+        else:
+            ele = 0
+            point = 0
+            last = ''
+            numaftere = 0
+            q = 0
+            for i in num:
+                q = q+1
+                if i not in numbersE:
+                    return False
+                else:
+                    if point == 0 and i == '.':
+                        point = 1
+                        continue
+                    if point == 1 and (numaftere == 1 or ele == 0)and i in '+-': # 一个数字结束，进入了第二个数字(一般是复数)
+                        point = 0
+                        continue
+                    if ele == 0 and i in 'Ee': # 出现了第一个 E， 一个浮点数中只能出现一个 E
+                        ele = 1
+                        continue
+                    if ele == 1 and i in '0123456789':
+                        numaftere = 1
+                        continue
+                    if ele == 1 and numaftere == 1 and i in '+-':
+                        # 针对复数的特例
+                        ele = 0
+                        numaftere = 0
+                        continue
+                    if last =='.' and i in '+-':
+                        return False
+                    elif (point == 1 or last in 'EeJj') and i =='.':
+                        return False
+                    elif i in 'Jj' and last in '+-':
+                        return False
+                    elif ele == 1 and i in 'Ee.':
+                        return False
+            last = i
+        if last == '.' and i in '+-':
+            return False
+        elif (point == 1 or last in 'EeJj') and i == '.':
+            return False
+        elif i in 'Jj' and last in '+-.':
+            return False
+        elif ele == 1 and i in 'Ee.':
+            return False
+        else:
+            return True
+    else:
+        return False
+    
+# 测试集
+print(isNum('Hello'))
+print(isNum('+++++++++++++++++++++++++++++++++++++'))
+print(isNum('+-+-+-+-+-+-3'))
+print(isNum('100'))
+print(isNum('10e10'))
+print(isNum('10e+10'))
+print(isNum('10e10.'))
+print(isNum('10e10e'))
+print(isNum('10e10+4E10'))
+print(isNum('10e'))
+print(isNum('10e+1j'))
+print(isNum('10e10+1.j'))
+print(isNum('1.0e+10-j'))
+print(isNum('1.0e+1j-3.e'))
+print(isNum('1.0e10+1j-3.e10'))
+print(isNum('1.3333'))
+print(isNum('.3333'))
+print(isNum('.333.3'))
+print(isNum('.3333e5'))
+print(isNum('12345678'))
+print(isNum('0abddf'))
+print(isNum('0xabddf'))
+```
+
+5.4 实现multi()函数，参数个数不限，返回所有参数的乘积
+
+```python
+def multi(*args):
+    sum = 1;
+    count = 1;
+    for i in args:
+        if type(i) is type(1) or type(i) is type(1.):
+            sum *= i
+        else:
+            print(f'第{count}项不是一个有效的整数！ ')
+            return;
+        count += 1
+    return sum;
+
+print(multi(2,3,1.0,5,4.99))
+print(multi(2,1,'str'))
+print(multi())
+```
+
+5.5 实现isPrime()函数，参数为整数，要有异常处理。如果整数是质数，返回True,否则返回False
+
+```python
+import math
+def isPrime(num):
+    try:
+        if type(num) == type(0.):
+            raise TypeError
+        r = int(math.floor(math.sqrt(num)))
+    except TypeError:
+        print('不是一个有效的整数')
+        return None
+    if num == 1:
+        return False
+    for i in range(2, r+1):
+        if num % i == 0:
+            return False
+    return True
+
+print(isPrime(2))
+print(isPrime(44))
+print(isPrime('str'))
+print(isPrime(1))
+print(isPrime(3.3))
+print(isPrime(0x18))
+```
+
+5.6 使用datetime库，对自己生日输出不少于10种日期格式
+
+```python
+from datetime import datetime
+
+birthday = datetime(1995,1,1,23,00)
+print(birthday)
+print('%s 年%s 月%s 日'%(birthday.year,birthday.month,birthday.day))
+print('{0:%Y}-{0:%m}-{0:%d} {0:%a}'.format(birthday))
+print('{0:%b}.{0:%d} {0:%Y}'.format(birthday))
+print('{0:%d}{1:} {0:%b} {0:%Y}'.format(birthday,
+['st','nd','rd','th'][birthday.day%10-1 if birthday.day%10<=3 else 3]))
+```
+
+5.7  汉诺塔问题
+
+```
+
+```
 
 
 
+## Python123练习题
 
+**#6914 七段数码管的绘制**
 
+> 这是"实例"题，与课上讲解实例相同，请作答检验学习效果。
 
-## Python123
+**#6923 科赫雪花小包裹**
+
+> 这是"实例"题，与课上讲解实例相同，请作答检验学习效果。
+
+**#15213 任意累积**
+
+> 请根据编程模板补充代码，计算任意个输入数字的乘积。‪‬‪‬‪‬‪‬‪‬‮‬‫‬‫‬‪‬‪‬‪‬‪‬‪‬‮‬‭‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‪‬‭‬‪‬‪‬‪‬‪‬‪‬‮‬‪‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‭‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‭‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‫‬‮‬
+>
+> 注意，仅需要在标注...的地方补充一行或多行代码。
+>
+> ```python
+> # 请在...补充一行或多行代码
+> 
+> def cmul(...):
+>     ...
+> 
+> print(eval("cmul({})".format(input())))
+> ```
+>
+> 解答：
+>
+> ```python
+> def cmul(a, *b):
+>     m = a
+>     for i in b:
+>         m *= i
+>     return m
+> 
+> print(eval(f'cmul({input()})'))
+> ```
+>
+> 
+
+## Python测试题
+
+**#15310 随机密码生成**
+
+> \#15310 随机密码生成
+>
+>  **描述**
+>
+> 补充编程模板中代码，完成如下功能：‪‬‪‬‪‬‪‬‪‬‮‬‪‬‭‬‪‬‪‬‪‬‪‬‪‬‮‬‪‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‭‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‭‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‫‬‮‬
+>
+> 以整数17为随机数种子，获取用户输入整数N为长度，产生3个长度为N位的密码，密码的每位是一个数字。每个密码单独一行输出。‪‬‪‬‪‬‪‬‪‬‮‬‪‬‭‬‪‬‪‬‪‬‪‬‪‬‮‬‪‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‭‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‭‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‫‬‮‬
+>
+> 产生密码采用random.randint()函数。‪‬‪‬‪‬‪‬‪‬‮‬‪‬‭‬‪‬‪‬‪‬‪‬‪‬‮‬‪‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‭‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‭‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‫‬‮‬
+>
+>  **输入输出示例**
+>
+> |        | 输入 | 输出            |
+> | ------ | ---- | --------------- |
+> | 示例 1 | `3`  | 634   524   926 |
+>
+> ```python
+> #请在...补充代码
+> import random
+> 
+> def genpwd(length):
+>     a = 10**(length-1)
+>     b = 10**length - 1
+>     return f'{random.randint(a,b)}'
+> 
+> length = eval(input())
+> random.seed(17)
+> for i in range(3):
+>     print(genpwd(length))
+> ```
+>
+> **解答**
+>
+> ```python
+> import random
+> 
+> def genpwd(length):
+>     a = 10**(length-1)
+>     b = 10**length - 1
+>     return "{}".format(random.randint(a, b))
+> 
+> length = eval(input())
+> random.seed(17)
+> for i in range(3):
+>     print(genpwd(length))
+> ```
+>
+> 
+
+**\#15293 连续质数计算**
+
+>  **连续质数计算**
+>
+> **描述**
+>
+> 补充编程模板中代码，完成如下功能：‪‬‪‬‪‬‪‬‪‬‮‬‪‬‭‬‪‬‪‬‪‬‪‬‪‬‮‬‪‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‭‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‭‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‫‬‮‬
+>
+> 获得用户输入数字N，计算并输出从N开始的5个质数，单行输出，质数间用逗号,分割。‪‬‪‬‪‬‪‬‪‬‮‬‪‬‭‬‪‬‪‬‪‬‪‬‪‬‮‬‪‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‭‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‭‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‫‬‮‬
+>
+> 注意：需要考虑用户输入的数字N可能是浮点数，应对输入取整数；最后一个输出后不用逗号。‪‬‪‬‪‬‪‬‪‬‮‬‪‬‭‬‪‬‪‬‪‬‪‬‪‬‮‬‪‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‭‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‭‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‫‬‮‬
+>
+>  ‪‬‪‬‪‬‪‬‪‬‮‬‪‬‭‬‪‬‪‬‪‬‪‬‪‬‮‬‪‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‭‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‭‬‪‬‪‬‪‬‪‬‪‬‪‬‮‬‫‬‮
+>
+> ## **输入输出示例**
+>
+> |        | 输入 | 输出             |
+> | ------ | ---- | ---------------- |
+> | 示例 1 | `12` | `13,17,19,23,29` |
+>
+> ```python
+> # 请在...补充一行或多行代码
+> 
+> def prime(m):
+>     for i in range(2,m):
+>         if m % i == 0:
+>             return False
+>     return True
+> 
+> n = eval(input())
+> 
+> n_ = int(n)
+> n_ = n_+1 if n_ < n else n_
+> count = 5
+> 
+> while count > 0:
+>     if prime(n_):
+>         if count > 1:
+>             print(n_, end=",")
+>         else:
+>             print(n_, end="")
+>         count -= 1 
+>     n_ += 1
+> ```
+>
+> **解答**
+>
+> ```
+> def prime(m):
+>     for i in range(2,m):
+>         if m % i == 0:
+>             return False
+>     return True
+> 
+> n = eval(input())
+> n_ = int(n)
+> n_ = n_+1 if n_ < n else n_
+> count = 5
+> 
+> while count > 0:
+>     if prime(n_):
+>         if count > 1:
+>             print(n_, end=",")
+>         else:
+>             print(n_, end="")
+>         count -= 1 
+>     n_ += 1
+> ```
+>
+> 这个代码注意：
+>
+> (1) 需要对输入小数情况进行判断，获取超过该输入的最小整数（这里没用floor()函数）；
+>
+> (2) 对输出格式进行判断，最后一个输出后不增加逗号（这里没用.join()方法）。
+
+ 
