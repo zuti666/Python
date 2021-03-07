@@ -578,7 +578,7 @@ for i in range(10):
 
 ### 《三国演义》人物出场统计
 
-```
+```python
 # 三国演义人物出场次统计
 import jieba
 #排除无关词

@@ -453,8 +453,8 @@ w = worldcloud.WorldCloud
 、
 
 ```python
-import worldcloud
-c= wordcloud.WorldCloud()
+import wordcloud
+c= wordcloud.WordCloud()
 w.generate("wordcloud  by Python")
 c.to_file("Pywordcloud.png")
 ```
